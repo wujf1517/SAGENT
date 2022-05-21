@@ -40,7 +40,8 @@ epoch = 1   # dataset.repeat() 的参数，设置为None，可以不断取数
 # path = r'dataRecord\2601\2601img'
 # path = r'PicClassTrain'
 
-path = r'dataRecord/2601withoutV'
+# path = r'dataRecord/2601withoutV'
+path = r'dataRecord/WithoutV2601'
 
 # 传入图片名，返回正则化后的图片的像素值
 def read_img(img_name, lable):
@@ -224,8 +225,8 @@ with tf.Session() as sess:
         val_test, l_test = sess.run(one_element)
         l_test = one_hot(l_test,num_classes) # 原来为2分类 l = one_hot(l,2) one_hot的输入要从0开始
         saver.restore(sess, 'saver\save_net')
-        acc, loss = sess.run([accuracy, cross_entropy], feed_dict={x:(val_test*(1. / 255)-0.5), y_:l_test,keep_prob:1})
-        # print(l_test)
+        y_test,acc, loss = sess.run([y_conv,accuracy, cross_entropy], feed_dict={x:(val_test*(1. / 255)-0.5), y_:l_test,keep_prob:1})
+        print(np.argmax(y_test,1))
         num_true += acc
         print(" Loss: " + str(loss) + ", Testing Acc: " + str(acc))
         
