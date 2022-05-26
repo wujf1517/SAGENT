@@ -26,7 +26,7 @@ from unicodedata import name
 epoch = 1
 batch_size =32
 num_classes = 2             # 分类数目
-num_loop = int(2601/batch_size)     #数据集中的图片总数除batch
+num_loop = int(972/batch_size)     #数据集中的图片总数除batch
 
 # from cProfile import label
 # from tkinter import image_names
@@ -41,7 +41,8 @@ epoch = 1   # dataset.repeat() 的参数，设置为None，可以不断取数
 # path = r'PicClassTrain'
 
 # path = r'dataRecord/2601withoutV'
-path = r'dataRecord/WithoutV2601'
+path = r'dataRecord/WithoutV2883_LK_2'
+# path = r'dataRecord\WithoutV2883_LK'
 
 # 传入图片名，返回正则化后的图片的像素值
 def read_img(img_name, lable):
@@ -224,6 +225,7 @@ with tf.Session() as sess:
     for i in range(num_loop):
         val_test, l_test = sess.run(one_element)
         l_test = one_hot(l_test,num_classes) # 原来为2分类 l = one_hot(l,2) one_hot的输入要从0开始
+        # print(l_test)
         saver.restore(sess, 'saver\save_net')
         y_test,acc, loss = sess.run([y_conv,accuracy, cross_entropy], feed_dict={x:(val_test*(1. / 255)-0.5), y_:l_test,keep_prob:1})
         print(np.argmax(y_test,1))

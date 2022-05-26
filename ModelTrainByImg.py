@@ -21,12 +21,12 @@ from RL2class import setDir
 import os
 
 # define args
-batch_size =16
+batch_size =32
 num_classes = 2             # 分类数目
 
 img_resize = [128,128]
-epoch = 16   # dataset.repeat() 的参数，设置为None，可以不断取数
-num_examples = 300
+epoch = 35   # dataset.repeat() 的参数，设置为None，可以不断取数
+num_examples = 900 
 # path = r'picclass'
 # path = r'dataRecord\2601\2601img'
 
@@ -253,8 +253,6 @@ with tf.Session() as sess:
             writer.add_summary(accuracy_result_sum_acc,i*batch_idxs+j)
             accuracy_result_sum = tf.Summary(value=[tf.Summary.Value(tag="cross_entropy_test", simple_value=cross_entropy_test)]) # 转换为tf.summary对象
             writer.add_summary(accuracy_result_sum,i*batch_idxs+j)
-    
-    
 
     save_path = saver.save(sess,"saver\save_net")
     print("参数保存文件：",save_path)

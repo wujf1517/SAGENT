@@ -69,11 +69,54 @@ def addTrajectory(minx:int,miny:int,df: pd.DataFrame(),xi:int,ego:bool):
     return x_arry,y_arry,vx_arry,vy_arry
 
 
+def addTrajectory2(minx:int,miny:int,df: pd.DataFrame(),xi:int,ego:bool):
+    '''
+    针对LK文件的
+    注意上面的minx和miny都是用于坐标转换的
+    需要确定道路边界坐标之后，再重新确定
+    表格里面第二列是横轴，第一列是行驶方向（纵轴）    
+    '''
+    total_row = len(df.iloc[:, 0])
+    x_arry = []
+    y_arry = []
+    vx_arry = []
+    vy_arry=[]
+    if ego==True:
+        # min_vx = min(df.iloc[:,xi+2])
+        # min_vy = min(df.iloc[:,xi+3])
+
+        for i in range(total_row):
+            x = int(((df.iloc[i, xi]-minx)*1+5)) # # 行驶方向
+            y = int(((df.iloc[i,xi+1]-miny)*5+5)) 
+            vx = int((df.iloc[i,xi+2])*8) # 10
+            vy = int((df.iloc[i,xi+3])*8) # 10
+            x_arry.append(x)
+            y_arry.append(y)
+            vx_arry.append(vx)
+            vy_arry.append(vy)
+    else:
+        # min_vx = min(df.iloc[:,xi+4])
+        # min_vy = min(df.iloc[:,xi+5])
+        for i in range(total_row):
+            x = int(((df.iloc[i, xi]-minx)*3+5))
+            y = int((df.iloc[i,xi+1]-miny)*5+5)
+            vx = int((df.iloc[i,xi+4])*8) # 10
+            vy = int((df.iloc[i,xi+5])*8) # 10
+            x_arry.append(x)
+            y_arry.append(y)
+            vx_arry.append(vx)
+            vy_arry.append(vy)
+
+    return x_arry,y_arry,vx_arry,vy_arry
+
+
+
+
 def trajectoryDraw(filepath:str,df: pd.DataFrame()):
     total_row = len(df.iloc[:, 0])
-    egox,egoy,egovx,egovy = addTrajectory(6040,-2500,df,0,True)
+    egox,egoy,egovx,egovy = addTrajectory(6040,-2500,df,9,True)
 
-    su1x,su1y,su1vx,su1vy = addTrajectory(6040,-2500,df,9,False)
+    su1x,su1y,su1vx,su1vy = addTrajectory(6040,-2500,df,0,False)
 
     su2x,su2y,su2vx,su2vy = addTrajectory(6040,-2500,df,18,False)
 
@@ -179,15 +222,51 @@ def trajectoryDraw(filepath:str,df: pd.DataFrame()):
 
 
 # f = open("pic\wo2.txt", 'w+')  
+def minPosition(filedir:str,num_total:int):
+    minx_array,miny_array=[],[]
 
-def trajectoryWithoutV(filepath:str,df: pd.DataFrame()):
+    for i in range(0,num_total,1):
+        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+        file_path = filedir+'%s' % (i+1) + '-LK.csv'
+        df = pd.read_csv(file_path,header=None)
+        miny1 = min(df.iloc[:, 1])
+        miny_array.append(miny1)
+        miny2 = min(df.iloc[:, 10])
+        miny_array.append(miny2)
+        miny3 = min(df.iloc[:, 19])
+        miny_array.append(miny3)
+
+        minx1 = min(df.iloc[:, 0])
+        minx_array.append(minx1)
+        minx2 = min(df.iloc[:, 9])
+        minx_array.append(minx2)
+        minx3 = min(df.iloc[:, 18])
+        minx_array.append(minx3)
+
+    minx_total = min(minx_array)
+    miny_total = min(miny_array)
+    return minx_total,miny_total
+
+
+def trajectoryWithoutV(filepath,filedir:str,df: pd.DataFrame(),minx_total,miny_total):
     r_num = 125
     total_row = len(df.iloc[:, 0])
-    egox,egoy,egovx,egovy = addTrajectory(6040,-2500,df,0,True)
 
-    su1x,su1y,su1vx,su1vy = addTrajectory(6040,-2500,df,9,False)
+    # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK\'
+    # filepath = filedir+'%s' % (i+1) + '-LK.csv'
+    # egox,egoy,egovx,egovy = addTrajectory(6040,-2500,df,0,True)
 
-    su2x,su2y,su2vx,su2vy = addTrajectory(6040,-2500,df,18,False)
+    # su1x,su1y,su1vx,su1vy = addTrajectory(6040,-2500,df,9,False)
+
+    # su2x,su2y,su2vx,su2vy = addTrajectory(6040,-2500,df,18,False)
+
+    # minx_total,miny_total = minPosition(filedir,2883)    
+
+    egoy,egox,egovx,egovy = addTrajectory2(minx_total,miny_total,df,0,True) # egoy是行驶方向
+
+    su1y,su1x,su1vx,su1vy = addTrajectory2(minx_total,miny_total,df,9,False)
+
+    su2y,su2x,su2vx,su2vy = addTrajectory2(minx_total,miny_total,df,18,False)
 
     k1,k2,k3,douTra = 0,0,0,0
 
@@ -239,16 +318,43 @@ def trajectoryWithoutV(filepath:str,df: pd.DataFrame()):
 
 
 if __name__ == "__main__":
-    for i in range(0,2601,1):
-        file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\%s' % (i+1) + '.csv'
+    # minx_array,miny_array=[],[]
+    filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'+'\\'
+    # for i in range(0,2883,1):
+    #     file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+    #     df = pd.read_csv(file_path,header=None)
+    #     miny = min(df.iloc[:, 1])
+    #     miny_array.append(miny)
+    #     minx = min(df.iloc[:, 0])
+    #     minx_array.append(minx)
+    # minx_total = min(minx_array)
+    # miny_total = min(miny_array)
+
+    minx_total,miny_total = minPosition(filedir,2883)
+
+    print(minx_total,miny_total)
+
+    for i in range(0,2883,1):
+        #file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\%s' % (i+1) + '.csv'
+        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+        # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'+'\\'
+
+        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+
+        filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'
+        file_path = filedir+'\%s' % (i+1) + '-LK.csv'
 
         # E:\code\scenarioagentcnn\PicClass\5
         # file_path2= 'imagergb\%s' % (i+1)+'.txt'
-        file_path2= 'imageRGBwithouV\%s' % (i+1)+'.txt'
+        file_path2= 'imageRGBwithouV2\%s' % (i+1)+'.txt'
         fileWriter = open(file_path2, 'w+')
         # filepath = 'E:\code\scenarioagentcnn\scnarioData\baseline\',1,'.csv'
         # file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\1.csv'
 
         df = pd.read_csv(file_path,header=None)
         # trajectoryDraw(fileWriter,df)
-        trajectoryWithoutV(fileWriter,df)
+        trajectoryWithoutV(fileWriter,filedir,df,minx_total,miny_total)
+    print('个RGB文件构建完成！写在'+filedir+'位置')
+
+
+# print(minx_arry)
