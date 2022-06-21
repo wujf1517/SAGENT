@@ -18,6 +18,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+import os
 
 from RL2class import RL2class
 
@@ -90,7 +91,7 @@ def addTrajectory2(minx:int,miny:int,df: pd.DataFrame(),xi:int,ego:bool):
         # min_vy = min(df.iloc[:,xi+3])
 
         for i in range(total_row):
-            x = int(((df.iloc[i, xi]-minx)*1+5)) # # 行驶方向
+            x = int(((df.iloc[i, xi]-minx)*0.5+5)) # # 行驶方向
             y = int(((df.iloc[i,xi+1]-miny)*5+5)) 
             vx = int((df.iloc[i,xi+2])*8) # 10
             vy = int((df.iloc[i,xi+3])*8) # 10
@@ -259,33 +260,34 @@ def trajectoryWithoutV(filepath,filedir:str,df: pd.DataFrame(),minx_total,miny_t
 
 if __name__ == "__main__":
     # minx_array,miny_array=[],[]
-    filedir = r'E:\code\scenarioagentcnn\scenarioData4\base'+'\\'
+    filedir_sou = r'E:\code\scenarioagentcnn\scenarioData1\base'+'\\' # 原始场景文件位置
+    # filedir = r'E:\code\scenarioagentcnn\scnarioData\base'+'\\'
+    filedir_tar = r'RGB\\RGB1'
 
-    minx_total,miny_total = minPosition(filedir,1792)
+    files = os.listdir(filedir_sou)   # 读入文件夹
+    num_csv = len(files)       # 统计文件夹中的文件个数
+
+    minx_total,miny_total = minPosition(filedir_sou,num_csv)
 
     print(minx_total,miny_total)
 
-    for i in range(0,1792,1):
+    for i in range(0,num_csv,1):
         # file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\%s' % (i+1) + '.csv'
         # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
         # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'+'\\'
-
-        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
-
-        # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'
-        file_path = filedir+'\%s' % (i+1) + '.csv'
+        file_path = filedir_sou+'\%s' % (i+1) + '.csv'
 
         # E:\code\scenarioagentcnn\PicClass\5
         # file_path2= 'imagergb\%s' % (i+1)+'.txt'
-        file_path2= 'imageRGBwithouV2\%s' % (i+1)+'.txt'
+        file_path2= filedir_tar+'\%s' % (i+1)+'.txt'
         fileWriter = open(file_path2, 'w+')
         # filepath = 'E:\code\scenarioagentcnn\scnarioData\baseline\',1,'.csv'
         # file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\1.csv'
 
         df = pd.read_csv(file_path,header=None)
         # trajectoryDraw(fileWriter,df)
-        trajectoryWithoutV(fileWriter,filedir,df,minx_total,miny_total)
-    print('个RGB文件构建完成！写在'+file_path2+'位置')
+        trajectoryWithoutV(fileWriter,filedir_sou,df,minx_total,miny_total)
+    print(num_csv,'个RGB文件构建完成！写在'+filedir_tar+'位置')
 
 
 # print(minx_arry)

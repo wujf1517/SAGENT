@@ -98,7 +98,7 @@ def addTrajectory2(minx:int,miny:int,df: pd.DataFrame(),xi:int,ego:bool):
         # min_vx = min(df.iloc[:,xi+4])
         # min_vy = min(df.iloc[:,xi+5])
         for i in range(total_row):
-            x = int(((df.iloc[i, xi]-minx)*3+5))
+            x = int(((df.iloc[i, xi]-minx)*1+5))
             y = int((df.iloc[i,xi+1]-miny)*5+5)
             vx = int((df.iloc[i,xi+4])*8) # 10
             vy = int((df.iloc[i,xi+5])*8) # 10
@@ -108,7 +108,6 @@ def addTrajectory2(minx:int,miny:int,df: pd.DataFrame(),xi:int,ego:bool):
             vy_arry.append(vy)
 
     return x_arry,y_arry,vx_arry,vy_arry
-
 
 
 
@@ -227,7 +226,8 @@ def minPosition(filedir:str,num_total:int):
 
     for i in range(0,num_total,1):
         # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
-        file_path = filedir+'%s' % (i+1) + '-LK.csv'
+        file_path = filedir+'%s' % (i+1) + '.csv'
+        # file_path = filedir+'%s' % (i+1) + '.csv'
         df = pd.read_csv(file_path,header=None)
         miny1 = min(df.iloc[:, 1])
         miny_array.append(miny1)
@@ -315,46 +315,58 @@ def trajectoryWithoutV(filepath,filedir:str,df: pd.DataFrame(),minx_total,miny_t
                 print(255,",",255,",",255,file=filepath)
 
 
+# import pandas as pd
+def filePre(filedir:str,filedir2:str,num_total:int):
+    '''数据格式转换,调换列的位置'''
+    for i in range(0,num_total,1):
+        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+        file_path = filedir+'%s' % (i+1) + '.csv'
+        file_path2 = filedir2+'%s' % (i+1) + '.csv'
+        df = pd.read_csv(file_path,header=None)
+        print(min(df.iloc[:,0]))
+        df[[0, 1]] = df[[1, 0]]
+        df[[9, 10]] = df[[10, 9]]
+        df[[18, 19]] = df[[19, 18]]
+        df.to_csv(file_path2,header=None,index=None)
+
+
 
 
 if __name__ == "__main__":
-    # minx_array,miny_array=[],[]
-    filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'+'\\'
-    # for i in range(0,2883,1):
-    #     file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+    # # minx_array,miny_array=[],[]
+    # filedir = r'E:\code\scenarioagentcnn\scenarioData5\base'+'\\'
+    # # filedir = r'E:\code\scenarioagentcnn\scnarioData\base'+'\\'
+
+    # minx_total,miny_total = minPosition(filedir,3844)
+
+    # print(minx_total,miny_total)
+
+    # for i in range(0,3,1):
+    #     #file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\%s' % (i+1) + '.csv'
+    #     # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+    #     file_path = r'E:\code\scenarioagentcnn\scenarioData5\base\%s' % (i+1) + '.csv'
+
+    #     # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'+'\\'
+
+    #     # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'
+    #     # file_path = filedir+'\%s' % (i+1) + '-LK.csv'
+
+    #     # E:\code\scenarioagentcnn\PicClass\5
+    #     # file_path2= 'imagergb\%s' % (i+1)+'.txt'
+    #     file_path2= 'imageRGBwithouV2\%s' % (i+1)+'.txt'
+    #     # file_path = filedir+'%s' % (i+1) + '.csv'
+
+    #     # file_path2= 'imageRGBwithouV\%s' % (i+1)+'.txt'
+    #     fileWriter = open(file_path2, 'w+')
+
     #     df = pd.read_csv(file_path,header=None)
-    #     miny = min(df.iloc[:, 1])
-    #     miny_array.append(miny)
-    #     minx = min(df.iloc[:, 0])
-    #     minx_array.append(minx)
-    # minx_total = min(minx_array)
-    # miny_total = min(miny_array)
+    #     # trajectoryDraw(fileWriter,df)
+    #     trajectoryWithoutV(fileWriter,filedir,df,minx_total,miny_total)
+    # print('个RGB文件构建完成!写在'+file_path2+'位置')
 
-    minx_total,miny_total = minPosition(filedir,2883)
-
-    print(minx_total,miny_total)
-
-    for i in range(0,2883,1):
-        #file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\%s' % (i+1) + '.csv'
-        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
-        # filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'+'\\'
-
-        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
-
-        filedir = r'E:\code\scenarioagentcnn\scenarioData2\LK'
-        file_path = filedir+'\%s' % (i+1) + '-LK.csv'
-
-        # E:\code\scenarioagentcnn\PicClass\5
-        # file_path2= 'imagergb\%s' % (i+1)+'.txt'
-        file_path2= 'imageRGBwithouV2\%s' % (i+1)+'.txt'
-        fileWriter = open(file_path2, 'w+')
-        # filepath = 'E:\code\scenarioagentcnn\scnarioData\baseline\',1,'.csv'
-        # file_path = r'E:\code\scenarioagentcnn\scnarioData\baseline\1.csv'
-
-        df = pd.read_csv(file_path,header=None)
-        # trajectoryDraw(fileWriter,df)
-        trajectoryWithoutV(fileWriter,filedir,df,minx_total,miny_total)
-    print('个RGB文件构建完成！写在'+filedir+'位置')
-
-
-# print(minx_arry)
+# '''文件格式转换'''
+    # filedir = r'E:\code\scenarioagentcnn\scnarioData\baseline'+'\\'
+    # filedir2 = r'E:\code\scenarioagentcnn\scnarioData\base'+'\\'
+    filedir = r'E:\code\scenarioagentcnn\scenarioData2\base2'+'\\'
+    filedir2 = r'E:\code\scenarioagentcnn\scenarioData2\base'+'\\'
+    filePre(filedir,filedir2,2883)

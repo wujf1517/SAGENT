@@ -7,7 +7,8 @@
  * @date: 2022-05-02 
  * @time: 10:37:54 
  * Version:1.0.0
- * description:加载恢复模型（加载参数就好），但本文的这种方式需要将模型重新构造一遍（把原来模型复制过来就可），这样避免了找入口（名称不好找）的尴尬问题
+ * description:加载恢复模型（加载参数就好），但本文的这种方式需要将模型重新构造一遍（把原来模型复制过来就可），
+ 这样避免了找入口（名称不好找）的尴尬问题
  */'''
  
 # from warnings import filters
@@ -101,7 +102,7 @@ with tf.name_scope('cross_entropy'):
 
 with tf.name_scope('image_input'):
     img, label = ReadMyownData.read_and_decode("123train.tfrecords")
-    img_test, label_test = ReadMyownData.read_and_decode("123train_26.tfrecords")  # dataRecord\\2601\\123test.tfrecords
+    img_test, label_test = ReadMyownData.read_and_decode("123train.tfrecords")  # dataRecord\\2601\\123test.tfrecords
     
     # img, label = ReadMyownData.read_and_decode(".\dataRecord\successful\\123train.tfrecords")
     # img_test, label_test = ReadMyownData.read_and_decode(".\dataRecord\successful\\123test.tfrecords")
