@@ -24,7 +24,7 @@ import pandas as pd
 
 HEIGTH = 128*2          #x坐标  通过对txt里的行数进行整数分解160
 WIDTH =64               #y坐标  x*y = 行数70
-num_samples =1200       #采集样本的数目
+num_samples =1100       #采集样本的数目
 # num_train_img ,num_test_img= 0,0
 
 def imgStore2TrainTest(num_img:int,num_samples:int,RGB_dir:str,df1: pd.DataFrame()):
@@ -32,7 +32,7 @@ def imgStore2TrainTest(num_img:int,num_samples:int,RGB_dir:str,df1: pd.DataFrame
     将图片按照测试集和训练集分别存储
     '''
     num_train_img,num_test_img = 0,0
-    for i in range(0,num_img,1): # 0:800;800:1000;##800:1200 # 2100,2600,   
+    for i in range(0,num_img,1):   
         im = Image.new("RGB",(HEIGTH,WIDTH))#创建图片
         # file_path = r'imagergb\%s' % (i+1) + '.txt' # 前面加'r'可以防止字符串在时候的时候不被转义
         file_path = RGB_dir+'\%s' % (i+1) + '.txt'
@@ -40,7 +40,7 @@ def imgStore2TrainTest(num_img:int,num_samples:int,RGB_dir:str,df1: pd.DataFrame
         Random = random.uniform(0,10)
 
         if Random < 7*num_samples/num_img:
-            fileSave= 'PicClassTrain\%s' % (cla)+'\%s' % (i+1)+'.jpg' # 存储到测训练集
+            fileSave= 'PicClassTrain\%s' % (cla)+'\%s' % (i+1)+'.png' # 存储到测训练集
             num_train_img +=1
 
             file = open(file_path) #打开rbg值文件
@@ -55,7 +55,7 @@ def imgStore2TrainTest(num_img:int,num_samples:int,RGB_dir:str,df1: pd.DataFrame
             im.save(fileSave)
 
         elif Random < 10*num_samples/num_img:
-            fileSave= 'PicClassTest\%s' % (cla)+'\%s' % (i+1)+'.jpg' # 存储到测试集
+            fileSave= 'PicClassTest\%s' % (cla)+'\%s' % (i+1)+'.png' # 存储到测试集
             num_test_img +=1
 
             file = open(file_path) #打开rbg值文件
@@ -71,7 +71,6 @@ def imgStore2TrainTest(num_img:int,num_samples:int,RGB_dir:str,df1: pd.DataFrame
         else:continue
     return num_train_img,num_test_img
 
-
 def allImgStore(num_img:int,RGB_dir:str,filesave:str,df1:pd.DataFrame()):
     '''
     将所图片全部放入训练文件夹
@@ -84,7 +83,7 @@ def allImgStore(num_img:int,RGB_dir:str,filesave:str,df1:pd.DataFrame()):
         cla = RL2class(i,df1) # cla = RL2class(i)
 
         # fileSave= 'dataRecord\WithoutV2883_LK_2\%s' % (cla)+'\%s' % (i+1)+'.jpg' # 存储到测训练集
-        fileSave = filesave + '%s' % (cla)+'\%s' % (i+1)+'.jpg' # 存储到测训练集
+        fileSave = filesave + '%s' % (cla)+'\%s' % (i+1)+'.png' # 存储到测训练集
 
 
         file = open(file_path) #打开rbg值文件
@@ -122,11 +121,11 @@ def traTest(file_path:str,fileSave:str):
 
 if __name__=='__main__':
     # RGB_path = 'imageRGBwithouV'
-    RGB_path = 'RGB\\RGB4'
+    RGB_path = 'RGB\\RGB5'
     files = os.listdir(RGB_path)   # 读入文件夹
     num_txt = len(files)       # 统计文件夹中的文件个数
     # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK_RESULT\\minResult.csv'
-    file_path = r'E:\code\scenarioagentcnn\scenarioData4\计算结果\\minResult.csv'
+    file_path = r'E:\code\scenarioagentcnn\scenarioData5\计算结果\\minResult.csv'
 
     df1 = pd.read_csv(file_path,header=None) # 加上header=None，否则默认第一行为标题
 
@@ -136,17 +135,18 @@ if __name__=='__main__':
     setDir('PicClassTest\\2')
     setDir('PicClassTrain\\1')
     setDir('PicClassTrain\\2')
-    print(num_txt,"文件夹清空，正在准备放入新的图片")
+    print(num_txt,"文件夹清空，正在准备放入新的训练图片")
     num_train_img,num_test_img = imgStore2TrainTest(num_txt,num_samples,RGB_path,df1)
     print("训练集照片:",num_train_img,"测试集照片:",num_test_img)
     print("图片准备完成！","共",num_train_img+num_test_img,"张")
 
 
-    '''全部转为训练文件'''
-    # setDir('dataRecord\WithoutV_LK1\\1')
-    # setDir('dataRecord\WithoutV_LK1\\2')
+    # '''全部转为测试文件'''
+    # filesave = 'dataRecord\WithoutV_LK4\\'
+    # setDir(filesave+'1')
+    # setDir(filesave+'2')
     # print("文件夹清空，正在准备放入新的图片")
-    # filesave = 'dataRecord\WithoutV_LK1\\'
+    # # filesave = 'dataRecord\WithoutV_LK2\\'
     # num_img_all = allImgStore(num_txt,RGB_path,filesave,df1)
     # print("图片准备完成！","共",num_img_all,"张,",'已经放入'+filesave+'中')
 

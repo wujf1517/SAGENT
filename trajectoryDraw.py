@@ -330,6 +330,22 @@ def filePre(filedir:str,filedir2:str,num_total:int):
         df.to_csv(file_path2,header=None,index=None)
 
 
+def fileContact(filedir:str,filedir2:str,num_total_sou:int,num_total_tar:int):
+    '''数据格式转换,调换列的位置'''
+    for i in range(0,num_total_sou,1):
+        # file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK\%s' % (i+1) + '-LK.csv'
+        file_path = filedir+'%s' % (i+1) + '.csv'
+        file_path2 = filedir2+'%s' % (i+num_total_tar+1) + '.csv'
+        df = pd.read_csv(file_path,header=None)
+        df.to_csv(file_path2,header=None,index=None)
+
+def fileContactFile(filedir:str,filedir2:str):
+    '''数据格式转换,调换列的位置'''
+    df1 = pd.read_csv(filedir,header=None)
+    df2 = pd.read_csv(filedir2,header=None)
+    df = pd.concat([df1,df2],axis=0)
+
+    df.to_csv(filedir,header=None,index=None)
 
 
 if __name__ == "__main__":
@@ -367,6 +383,13 @@ if __name__ == "__main__":
 # '''文件格式转换'''
     # filedir = r'E:\code\scenarioagentcnn\scnarioData\baseline'+'\\'
     # filedir2 = r'E:\code\scenarioagentcnn\scnarioData\base'+'\\'
-    filedir = r'E:\code\scenarioagentcnn\scenarioData2\base2'+'\\'
-    filedir2 = r'E:\code\scenarioagentcnn\scenarioData2\base'+'\\'
-    filePre(filedir,filedir2,2883)
+
+    '''base合并'''
+    filedir = r'E:\code\scenarioagentcnn\scenarioData4\base'+'\\'
+    filedir2 = r'E:\code\scenarioagentcnn\scenarioData6\base'+'\\'
+    fileContact(filedir,filedir2,1792,3844)
+
+    # '''result合并'''
+    # filedir = r'E:\code\scenarioagentcnn\scenarioData6\计算结果\minResult.csv'
+    # filedir2 = r'E:\code\scenarioagentcnn\scenarioData4\计算结果\minResult.csv'
+    # fileContactFile(filedir,filedir2)
