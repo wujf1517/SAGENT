@@ -7,8 +7,12 @@ import shutil
 这个函数根据minRL值对图片进行分类
 '''
 
-file_path = r'E:\code\scenarioagentcnn\scnarioData\计算结果\\minResult.csv'
-df = pd.read_csv(file_path,header=None) # 加上header=None，否则默认第一行为标题
+# file_path = r'E:\code\scenarioagentcnn\scnarioData\计算结果\\minResult.csv'
+# file_path = r'E:\code\scenarioagentcnn\scenarioData2\LK_RESULT\\minResult.csv'
+# file_path = r'E:\code\scenarioagentcnn\scenarioData4\计算结果\\minResult.csv'
+# file_path = r'E:\code\scenarioagentcnn\scenarioData4\SO1213_RESULT\\SO1213_minResult.csv'
+
+# df = pd.read_csv(file_path,header=None) # 加上header=None，否则默认第一行为标题
 # print(df.iloc[:,1])
 
 # def RL2class(i):
@@ -48,8 +52,8 @@ def setDir(filepath):
         os.mkdir(filepath)
 
 
-def RL2class(i):
-    if df.iloc[i,1]<0.5: # 0.7
+def RL2class(i,df: pd.DataFrame()):
+    if df.iloc[i,1]<0.7: # 0.7
         return 1
     else:
         return 2

@@ -28,7 +28,7 @@ batch_size =32
 num_classes = 2             # 分类数目
 
 img_resize = [128,128]
-epoch =45                 # dataset.repeat() 的参数，设置为None，可以不断取数
+epoch =10                # dataset.repeat() 的参数，设置为None，可以不断取数
 num_examples = 850 
 
 path = r'PicClassTrain'
@@ -121,7 +121,9 @@ one_element2 = iterator2.get_next()  # 创建dataset是batch_size 为多少这�
 #     focal_loss = - alpha_t * weight * tf.log(p_t)
 #     return tf.reduce_mean(focal_loss)
 
-def binary_focal_loss(target_tensor,prediction_tensor, alpha=0.25, gamma=2):
+def binary_focal_loss(target_tensor,prediction_tensor, alpha=0.1*num_image_weight, gamma=num_image_weight):
+# binary_focal_loss(target_tensor,prediction_tensor, alpha=0.1*num_image_weight, gamma=num_image_weight):
+# binary_focal_loss(target_tensor,prediction_tensor, alpha=0.25, gamma=2):
     # binary_focal_loss(target_tensor,prediction_tensor, alpha=0.1*num_image_weight, gamma=num_image_weight):
     zeros = array_ops.zeros_like(prediction_tensor, dtype=prediction_tensor.dtype)
     target_tensor = tf.cast(target_tensor,prediction_tensor.dtype)
@@ -201,8 +203,8 @@ with tf.name_scope('cross_entropy'):
     #损失函数及优化算法
     # cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y_conv), reduction_indices=[1]),name='cross_entropy') 
     # cross_entropy1 = tf.nn.weighted_cross_entropy_with_logits(targets=y_, logits=y_conv, pos_weight = num_image_weight) # 全连接层（往往是模型的最后一层）的值，一般代码中叫做logits
-    cross_entropy1 = binary_focal_loss(y_, y_conv)
-    cross_entropy = tf.reduce_mean(cross_entropy1, name='cross_entropy')
+    cross_entropy = binary_focal_loss(y_, y_conv)
+    # cross_entropy = tf.reduce_mean(cross_entropy1, name='cross_entropy')
     # cross_entropy = tf.reduce_mean(tf.reduce_sum(cross_entropy1, reduction_indices=[1]),name='cross_entropy')
     
     # tf.reduce_mean 计算张量的各个维度上的元素的平均值.reduction_indices计算tensor指定轴方向上的所有元素的累加和;

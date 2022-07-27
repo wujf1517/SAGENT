@@ -231,8 +231,8 @@ with tf.name_scope('cross_entropy'):
     #损失函数及优化算法
     # cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y_conv), reduction_indices=[1]),name='cross_entropy') 
     # cross_entropy1 = tf.nn.weighted_cross_entropy_with_logits(targets=y_, logits=y_conv, pos_weight = num_image_weight) # 全连接层（往往是模型的最后一层）的值，一般代码中叫做logits
-    cross_entropy1 = binary_focal_loss(y_,y_conv)
-    cross_entropy = tf.reduce_mean(cross_entropy1, name='cross_entropy')
+    cross_entropy = binary_focal_loss(y_,y_conv)
+    # cross_entropy = tf.reduce_mean(cross_entropy1, name='cross_entropy')
     # cross_entropy = tf.reduce_mean(tf.reduce_sum(cross_entropy1, reduction_indices=[1]),name='cross_entropy')
     
     #tf.reduce_mean计算张量的各个维度上的元素的平均值.reduction_indices计算tensor指定轴方向上的所有元素的累加和;
